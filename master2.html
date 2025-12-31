@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Love ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-pink: #ff85a2;
+            --secondary-pink: #fbb1bd;
+            --dark-pink: #ff4d6d;
+            --bg-color: #fff0f3;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- ROMANTIC FLOATING HEARTS --- */
+        .heart-float {
+            position: fixed;
+            bottom: -10%;
+            font-size: 20px;
+            color: var(--dark-pink);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 5s linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            z-index: 10;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            border: 2px solid var(--secondary-pink);
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--dark-pink);
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- RUNNING SLIDESHOW --- */
+        .slideshow-frame {
+            width: 100%;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 3px solid white;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            object-fit: cover;
+        }
+
+        .slide.active { opacity: 1; }
+
+        /* --- BUTTONS --- */
+        .choices-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+            min-height: 100px;
+        }
+
+        button {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #yesBtn {
+            background: var(--dark-pink);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+            z-index: 11;
+        }
+
+        #noBtn {
+            background-color: #eee;
+            color: #888;
+            position: relative;
+            z-index: 12;
+        }
+
+        /* --- THE IRRITATING LINE --- */
+        #guiltLine {
+            margin-top: 80px; /* Space from the main box */
+            color: var(--dark-pink);
+            font-weight: 600;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainBox">
+        <div id="proposalView">
+            <h1>One Final Question... 🧐</h1>
+            
+            <div class="slideshow-frame">
+                <img src="https://i.ibb.co/Jwd5SRwY/IMG-8378.avif" class="slide active">
+                <img src="https://i.ibb.co/1f5BLQjV/IMG-8386.avif" class="slide">
+                <img src="https://i.ibb.co/2YhnCDJp/IMG-8390.avif" class="slide">
+            </div>
+
+            <p>Will you be my partner in crime for 2026?</p>
+
+            <div class="choices-box">
+                <button id="yesBtn">YES! 😍</button>
+                <button id="noBtn">NO 🫣</button>
+            </div>
+        </div>
+
+        <div id="successView" class="hidden">
+            <h1 style="font-size: 3rem;">YAY! ❤️</h1>
+            <p style="font-size: 1.2rem;">I knew you couldn't resist! 😉</p>
+            <div style="border: 2px dashed var(--dark-pink); padding: 15px; border-radius: 15px;">
+                <h3 style="color: var(--dark-pink);">Happy New Year, My Love!</h3>
+                <p>2025 was amazing because of you. I can't wait to irritate you a little more in 2026!</p>
+                <p><strong>I love you endlessly.</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="guiltLine">
+        Baby, how can you do this? Try again! 🥺👉👈
+    </div>
+
+    <script>
+        // 1. Floating Hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-float');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+        setInterval(createHeart, 400);
+
+        // 2. Running Slideshow
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 3000);
+
+        // 3. THE "IRRITATING" PART (No Button Logic)
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const guiltLine = document.getElementById('guiltLine');
+        let yesSize = 1;
+        let noSize = 1;
+
+        const irritate = () => {
+            // Make NO button jump
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+
+            // Shrink NO button and Grow YES button
+            noSize -= 0.05;
+            yesSize += 0.15;
+            noBtn.style.transform = `scale(${noSize})`;
+            yesBtn.style.transform = `scale(${yesSize})`;
+
+            // Show and shake the guilt line
+            guiltLine.style.opacity = '1';
+            guiltLine.classList.add('shake');
+            setTimeout(() => guiltLine.classList.remove('shake'), 500);
+
+            // Change text of NO button randomly
+            const messages = ["Are you sure?", "Think again!", "Really??", "You're joking!", "Click YES!"];
+            noBtn.innerText = messages[Math.floor(Math.random() * messages.length)];
+        };
+
+        noBtn.addEventListener('mouseover', irritate);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            irritate();
+        });
+
+        // 4. YES Button Success
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('proposalView').classList.add('hidden');
+            document.getElementById('successView').classList.remove('hidden');
+            noBtn.classList.add('hidden');
+            guiltLine.classList.add('hidden');
+            
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        });
+    </script>
+</body>
+</html>
